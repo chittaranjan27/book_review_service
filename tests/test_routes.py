@@ -7,9 +7,11 @@ def client():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     with app.test_client() as client:
         with app.app_context():
+            db.drop_all()  # 👈 Add this line to clear previous tables/data
             db.create_all()
         yield client
         with app.app_context():
+            db.session.remove()
             db.drop_all()
 
 def test_list_books_empty(client):
